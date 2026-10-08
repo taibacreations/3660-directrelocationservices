@@ -1,5 +1,4 @@
 // File: app/login/login-form.tsx
-// (If your project uses a src/ folder, put it in src/app/login/login-form.tsx)
 
 "use client";
 
@@ -10,7 +9,7 @@ import { signIn, type LoginState } from "./actions";
 const initial: LoginState = { error: null, email: "" };
 
 const input =
-  "w-full rounded-xl border border-[#E6E8F2] bg-[#F7F7FC] px-4 py-3 text-sm text-[#14142B] placeholder:text-[#A0A3BD] focus:border-[#5A35E0] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#5A35E0]/20";
+  "w-full rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3 text-sm text-[#171717] placeholder:text-[#A3A3A3] focus:border-[#E10600] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#E10600]/20";
 
 export function LoginForm() {
   const next = useSearchParams().get("next") ?? "";
@@ -22,13 +21,13 @@ export function LoginForm() {
       <input type="hidden" name="next" value={next} />
 
       {state.error && (
-        <p role="alert" className="rounded-xl border border-[#FECDD6] bg-[#FFF5F7] px-3.5 py-2.5 text-sm text-[#BE123C]">
+        <p role="alert" className="rounded-xl border border-[#F6C3C0] bg-[#FFF6F5] px-3.5 py-2.5 text-sm text-[#B30500]">
           {state.error}
         </p>
       )}
 
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#3F4060]">
+        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#3D3D3D]">
           Email
         </label>
         <input
@@ -46,13 +45,13 @@ export function LoginForm() {
 
       <div>
         <div className="mb-1.5 flex items-center justify-between">
-          <label htmlFor="password" className="text-sm font-medium text-[#3F4060]">
+          <label htmlFor="password" className="text-sm font-medium text-[#3D3D3D]">
             Password
           </label>
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            className="text-sm font-medium text-[#5A35E0] hover:text-[#4A28C7]"
+            className="text-sm font-medium text-[#E10600] hover:text-[#C00500]"
           >
             {show ? "Hide" : "Show"}
           </button>
@@ -70,7 +69,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#4B32D4] px-4 py-3 text-sm font-bold shadow-lg shadow-[#4B32D4]/30 text-white transition-colors hover:bg-[#3E27B8] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A35E0]"
+        className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#E10600] px-4 py-3 text-sm font-bold shadow-lg shadow-[#E10600]/30 text-white transition-colors hover:bg-[#C00500] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]"
       >
         {pending && <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden />}
         {pending ? "Signing in" : "Sign in"}

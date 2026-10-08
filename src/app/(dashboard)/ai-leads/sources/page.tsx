@@ -1,5 +1,4 @@
 // File: app/(dashboard)/ai-leads/sources/page.tsx
-// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/sources/page.tsx)
 
 import type { ReactNode } from "react";
 import { db } from "@/lib/ai-leads/supabase";
@@ -57,23 +56,23 @@ export default async function SettingsPage() {
     >
       <ErrorNote messages={errors} />
 
-      <div className="divide-y divide-[#EEF0F6] rounded-2xl border border-[#E6E8F2] bg-white shadow-[0_12px_32px_-16px_rgba(46,59,219,0.35)]">
+      <div className="divide-y divide-[#F0F0F0] rounded-2xl border border-[#E5E5E5] bg-white shadow-[0_12px_32px_-16px_rgba(0,0,0,0.18)]">
         <Row
           title="AI outreach"
           description="Pausing stops every text and call right away. New leads are still saved and wait in line."
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2.5 text-sm">
-              <span className={`h-2.5 w-2.5 rounded-full ${aiOn ? "bg-[#10B981]" : "bg-[#F59E0B]"}`} />
+              <span className={`h-2.5 w-2.5 rounded-full ${aiOn ? "bg-[#16A34A]" : "bg-[#F59E0B]"}`} />
               <span className="font-medium">{aiOn ? "On, leads are being contacted" : "Paused"}</span>
             </div>
             <form action={setAiEnabled}>
               <input type="hidden" name="enabled" value={aiOn ? "false" : "true"} />
               <button
-                className={`rounded-xl px-3.5 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A35E0] ${
+                className={`rounded-xl px-3.5 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600] ${
                   aiOn
-                    ? "border border-[#D9DBE9] bg-white text-[#3F4060] hover:bg-[#F8F7FF]"
-                    : "bg-[#5A35E0] text-white hover:bg-[#4A28C7]"
+                    ? "border border-[#D4D4D4] bg-white text-[#3D3D3D] hover:bg-[#FAFAFA]"
+                    : "bg-[#E10600] text-white hover:bg-[#C00500]"
                 }`}
               >
                 {aiOn ? "Pause outreach" : "Turn outreach on"}
@@ -87,14 +86,14 @@ export default async function SettingsPage() {
           description="The AI only contacts leads from sources that are switched on. New sources from Granot show up here switched off, so you decide first."
         >
           {sources.length === 0 ? (
-            <p className="text-sm text-[#6E7191]">No sources yet.</p>
+            <p className="text-sm text-[#737373]">No sources yet.</p>
           ) : (
-            <ul className="divide-y divide-[#E6E8F2] rounded-xl border border-[#E6E8F2]">
+            <ul className="divide-y divide-[#E5E5E5] rounded-xl border border-[#E5E5E5]">
               {sources.map((s) => (
                 <li key={s.name} className="flex items-center justify-between gap-4 px-4 py-3">
                   <div className="min-w-0">
-                    <p className={`truncate text-sm font-medium ${s.enabled ? "" : "text-[#6E7191]"}`}>{s.name}</p>
-                    <p className="truncate text-xs text-[#6E7191]">{s.note ?? `First lead ${fmtTime(s.first_seen)}`}</p>
+                    <p className={`truncate text-sm font-medium ${s.enabled ? "" : "text-[#737373]"}`}>{s.name}</p>
+                    <p className="truncate text-xs text-[#737373]">{s.note ?? `First lead ${fmtTime(s.first_seen)}`}</p>
                   </div>
                   <form action={toggleSource}>
                     <input type="hidden" name="name" value={s.name} />
@@ -103,8 +102,8 @@ export default async function SettingsPage() {
                       role="switch"
                       aria-checked={s.enabled}
                       aria-label={`Contact leads from ${s.name}`}
-                      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A35E0] ${
-                        s.enabled ? "bg-[#5A35E0]" : "bg-[#D9DBE9]"
+                      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600] ${
+                        s.enabled ? "bg-[#E10600]" : "bg-[#D4D4D4]"
                       }`}
                     >
                       <span
@@ -133,21 +132,21 @@ export default async function SettingsPage() {
                   <button
                     role="radio"
                     aria-checked={on}
-                    className={`h-full w-full rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A35E0] ${
-                      on ? "border-[#5A35E0] bg-[#F1EDFE] ring-1 ring-[#5A35E0]" : "border-[#D9DBE9] bg-white hover:bg-[#F8F7FF]"
+                    className={`h-full w-full rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600] ${
+                      on ? "border-[#E10600] bg-[#FDECEB] ring-1 ring-[#E10600]" : "border-[#D4D4D4] bg-white hover:bg-[#FAFAFA]"
                     }`}
                   >
                     <span className="flex items-center gap-2 text-sm font-medium">
                       <span
                         className={`grid h-4 w-4 place-items-center rounded-full border ${
-                          on ? "border-[#5A35E0] bg-[#5A35E0]" : "border-[#D9DBE9] bg-white"
+                          on ? "border-[#E10600] bg-[#E10600]" : "border-[#D4D4D4] bg-white"
                         }`}
                       >
                         {on && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                       </span>
                       {d.label}
                     </span>
-                    <span className="mt-1 block text-xs text-[#6E7191]">{d.hint}</span>
+                    <span className="mt-1 block text-xs text-[#737373]">{d.hint}</span>
                   </button>
                 </form>
               );
@@ -164,9 +163,9 @@ export default async function SettingsPage() {
               {DAYS.map((day, dow) => {
                 const h = hours.find((x) => x.dow === dow);
                 return (
-                  <tr key={day} className="border-b border-[#EEF0F6] last:border-0">
-                    <td className={`py-2 ${h ? "font-medium" : "text-[#6E7191]"}`}>{day}</td>
-                    <td className={`py-2 text-right tabular-nums ${h ? "" : "text-[#A0A3BD]"}`}>
+                  <tr key={day} className="border-b border-[#F0F0F0] last:border-0">
+                    <td className={`py-2 ${h ? "font-medium" : "text-[#737373]"}`}>{day}</td>
+                    <td className={`py-2 text-right tabular-nums ${h ? "" : "text-[#A3A3A3]"}`}>
                       {h ? `${to12h(h.open_time)} – ${to12h(h.close_time)} ET` : "Closed"}
                     </td>
                   </tr>
@@ -174,7 +173,7 @@ export default async function SettingsPage() {
               })}
             </tbody>
           </table>
-          <p className="mt-3 text-sm text-[#6E7191]">
+          <p className="mt-3 text-sm text-[#737373]">
             Leads that arrive after hours wait until the next opening. The same phone number within{" "}
             {settings?.dedupe_days ?? 30} days counts as one lead.
           </p>
@@ -189,7 +188,7 @@ function Row({ title, description, children }: { title: string; description: str
     <section className="grid gap-4 px-5 py-6 md:px-6 lg:grid-cols-3 lg:gap-10">
       <div>
         <h2 className="text-base font-bold">{title}</h2>
-        <p className="mt-1 max-w-sm text-sm leading-relaxed text-[#6E7191]">{description}</p>
+        <p className="mt-1 max-w-sm text-sm leading-relaxed text-[#737373]">{description}</p>
       </div>
       <div className="lg:col-span-2">{children}</div>
     </section>
