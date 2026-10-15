@@ -394,15 +394,15 @@ export default async function AiLeadsPage({
                       style={{ width: `${Math.min(s.transfer_rate_pct ?? 0, 100)}%` }}
                     />
                   </div>
-                  <dl className="mt-2 grid grid-cols-4 gap-1 text-center">
+                  <dl className="mt-2 grid grid-cols-2 gap-1.5">
                     {[
                       ["Leads", s.leads],
                       ["Contacted", s.contacted],
                       ["Said yes", s.said_yes],
                       ["Transferred", s.transferred],
                     ].map(([label, value]) => (
-                      <div key={label} className="rounded-lg bg-[#F5F5F5] px-1 py-1.5">
-                        <dt className="text-[10px] font-medium uppercase tracking-wide text-[#737373]">{label}</dt>
+                      <div key={label} className="flex min-w-0 items-center justify-between gap-2 rounded-lg bg-[#F5F5F5] px-2.5 py-1.5">
+                        <dt className="truncate text-xs text-[#737373]">{label}</dt>
                         <dd className="text-sm font-extrabold tabular-nums">{value}</dd>
                       </div>
                     ))}
