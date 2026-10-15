@@ -1,4 +1,5 @@
-// File: app/(dashboard)/ai-leads/page.tsx
+// File: app/(dashboard)/ai-leads/page.tsx  (REPLACE existing file)
+// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/page.tsx)
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -50,6 +51,8 @@ interface Metrics {
 interface SourceRow {
   source: string;
   leads: number;
+  contacted: number;
+  said_yes: number;
   transferred: number;
   opted_out: number;
   unresponsive: number;
@@ -95,7 +98,7 @@ export default async function AiLeadsPage({
 
   const [metricsRes, sourcesRes, leadsRes, settingsRes] = await Promise.all([
     supa.from("v_ai_metrics").select("*").single<Metrics>(),
-    supa.from("v_ai_source_stats").select("*").returns<SourceRow[]>(),
+    supa.from("v_ai_source_report").select("*").returns<SourceRow[]>(),
     query.returns<LeadRow[]>(),
     supa.from("ai_settings").select("ai_enabled").eq("id", 1).single<{ ai_enabled: boolean }>(),
   ]);
@@ -391,9 +394,24 @@ export default async function AiLeadsPage({
                       style={{ width: `${Math.min(s.transfer_rate_pct ?? 0, 100)}%` }}
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-[#737373]">
-                    {s.transferred} of {s.leads} transferred, {s.opted_out} opted out
-                  </p>
+                  <dl className="mt-2 grid grid-cols-4 gap-1 text-center">
+                    {[
+                      ["Leads", s.leads],
+                      ["Contacted", s.contacted],
+                      ["Said yes", s.said_yes],
+                      ["Transferred", s.transferred],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-lg bg-[#F5F5F5] px-1 py-1.5">
+                        <dt className="text-[10px] font-medium uppercase tracking-wide text-[#737373]">{label}</dt>
+                        <dd className="text-sm font-extrabold tabular-nums">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  {(s.opted_out > 0 || s.unresponsive > 0) && (
+                    <p className="mt-1.5 text-xs text-[#737373]">
+                      {s.opted_out} opted out, {s.unresponsive} no response
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>

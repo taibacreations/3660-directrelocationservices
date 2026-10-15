@@ -1,8 +1,9 @@
-// File: app/(dashboard)/ai-leads/sources/page.tsx
+// File: app/(dashboard)/ai-leads/sources/page.tsx  (REPLACE existing file)
+// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/sources/page.tsx)
 
 import type { ReactNode } from "react";
 import { db } from "@/lib/ai-leads/supabase";
-import { setAiEnabled, setDisclosure, toggleSource } from "../actions";
+import { addSource, saveSourceRouting, setAiEnabled, setDisclosure, toggleSource } from "../actions";
 import { ErrorNote, HeroTitle, Shell, fmtTime } from "../_components/ui";
 
 const DISCLOSURE = [
@@ -18,6 +19,15 @@ interface Source {
   enabled: boolean;
   note: string | null;
   first_seen: string;
+  twilio_number: string | null;
+  ringcentral_did: string | null;
+  vapi_phone_number_id: string | null;
+}
+
+/** "+19545695292" → "(954) 569-5292" */
+function fmtPhone(e164: string | null | undefined) {
+  const m = /^\+1(\d{3})(\d{3})(\d{4})$/.exec(e164 ?? "");
+  return m ? `(${m[1]}) ${m[2]}-${m[3]}` : e164 || null;
 }
 
 interface Hours {
@@ -47,6 +57,8 @@ export default async function SettingsPage() {
   const hours = hoursRes.data ?? [];
   const aiOn = settings?.ai_enabled ?? true;
   const disclosure: string = settings?.ai_disclosure ?? "california";
+  const defaultFrom = fmtPhone(settings?.default_from_number) ?? "(954) 569-5292";
+  const defaultDid = fmtPhone(settings?.transfer_number) ?? "(855) 378-3110";
 
   return (
     <Shell
@@ -83,17 +95,22 @@ export default async function SettingsPage() {
 
         <Row
           title="Lead sources"
-          description="The AI only contacts leads from sources that are switched on. New sources from Granot show up here switched off, so you decide first."
+          description="The AI only contacts leads from sources that are switched on. Each source can have its own Twilio number (texts and calls go out from it) and its own RingCentral DID (calls transfer to it)."
         >
           {sources.length === 0 ? (
             <p className="text-sm text-[#737373]">No sources yet.</p>
           ) : (
             <ul className="divide-y divide-[#E5E5E5] rounded-xl border border-[#E5E5E5]">
               {sources.map((s) => (
-                <li key={s.name} className="flex items-center justify-between gap-4 px-4 py-3">
+                <li key={s.name} className="px-4 py-3">
+                  <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
                     <p className={`truncate text-sm font-medium ${s.enabled ? "" : "text-[#737373]"}`}>{s.name}</p>
-                    <p className="truncate text-xs text-[#737373]">{s.note ?? `First lead ${fmtTime(s.first_seen)}`}</p>
+                    <p className="truncate text-xs text-[#737373]">
+                      {s.twilio_number || s.ringcentral_did
+                        ? `Texts and calls from ${fmtPhone(s.twilio_number) ?? defaultFrom}, transfers to ${fmtPhone(s.ringcentral_did) ?? defaultDid}`
+                        : s.note ?? `First lead ${fmtTime(s.first_seen)}`}
+                    </p>
                   </div>
                   <form action={toggleSource}>
                     <input type="hidden" name="name" value={s.name} />
@@ -113,10 +130,64 @@ export default async function SettingsPage() {
                       />
                     </button>
                   </form>
+                  </div>
+
+                  <details className="group mt-2">
+                    <summary className="w-fit cursor-pointer list-none rounded-lg text-xs font-bold text-[#E10600] hover:text-[#C00500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]">
+                      <span className="group-open:hidden">Edit numbers</span>
+                      <span className="hidden group-open:inline">Close</span>
+                    </summary>
+                    <form action={saveSourceRouting} className="mt-3 grid gap-3 sm:grid-cols-2">
+                      <input type="hidden" name="name" value={s.name} />
+                      <Field
+                        name="twilio_number"
+                        label="Twilio number"
+                        hint={`Texts and calls go out from this number. Empty = ${defaultFrom}.`}
+                        defaultValue={fmtPhone(s.twilio_number) ?? ""}
+                        placeholder="(954) 555-0100"
+                      />
+                      <Field
+                        name="ringcentral_did"
+                        label="RingCentral DID"
+                        hint={`"Yes" calls and inbound calls go here. Empty = ${defaultDid}.`}
+                        defaultValue={fmtPhone(s.ringcentral_did) ?? ""}
+                        placeholder="(954) 555-0199"
+                      />
+                      <Field
+                        name="vapi_phone_number_id"
+                        label="Vapi number ID"
+                        hint="Set by your developer after the Twilio number is connected to Vapi."
+                        defaultValue={s.vapi_phone_number_id ?? ""}
+                        placeholder="a81de8a7-…"
+                        mono
+                      />
+                      <div className="flex items-end">
+                        <button className="rounded-xl bg-[#E10600] px-4 py-2 text-sm font-medium text-white hover:bg-[#C00500] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]">
+                          Save numbers
+                        </button>
+                      </div>
+                    </form>
+                  </details>
                 </li>
               ))}
             </ul>
           )}
+
+          <form action={addSource} className="mt-4 flex flex-wrap items-end gap-3">
+            <label className="min-w-0 flex-1">
+              <span className="block text-xs font-medium text-[#3D3D3D]">Add a source</span>
+              <input
+                name="name"
+                required
+                placeholder="Exact name as Granot sends it"
+                className="mt-1 w-full rounded-xl border border-[#D4D4D4] bg-white px-3 py-2 text-sm placeholder:text-[#A3A3A3] focus:border-[#E10600] focus:outline-none focus:ring-1 focus:ring-[#E10600]"
+              />
+            </label>
+            <button className="rounded-xl border border-[#D4D4D4] bg-white px-4 py-2 text-sm font-medium text-[#3D3D3D] hover:bg-[#FAFAFA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]">
+              Add source
+            </button>
+          </form>
+          <p className="mt-2 text-xs text-[#737373]">New sources start switched off. Sources also appear here on their own when the first lead arrives.</p>
         </Row>
 
         <Row
@@ -180,6 +251,37 @@ export default async function SettingsPage() {
         </Row>
       </div>
     </Shell>
+  );
+}
+
+function Field({
+  name,
+  label,
+  hint,
+  defaultValue,
+  placeholder,
+  mono = false,
+}: {
+  name: string;
+  label: string;
+  hint: string;
+  defaultValue: string;
+  placeholder: string;
+  mono?: boolean;
+}) {
+  return (
+    <label className="block min-w-0">
+      <span className="block text-xs font-medium text-[#3D3D3D]">{label}</span>
+      <input
+        name={name}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        className={`mt-1 w-full rounded-xl border border-[#D4D4D4] bg-white px-3 py-2 text-sm placeholder:text-[#A3A3A3] focus:border-[#E10600] focus:outline-none focus:ring-1 focus:ring-[#E10600] ${
+          mono ? "font-mono text-xs" : "tabular-nums"
+        }`}
+      />
+      <span className="mt-1 block text-xs text-[#737373]">{hint}</span>
+    </label>
   );
 }
 
