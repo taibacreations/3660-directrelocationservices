@@ -52,7 +52,7 @@ export async function addSource(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   if (!name) throw new Error("Source name is required");
   // Must match the lead source name exactly as Granot / the website sends it
-  const { error } = await db().from("ai_lead_sources").insert({ name, enabled: false });
+  const { error } = await db().from("ai_lead_sources").insert({ name, enabled: true });
   if (error) {
     if (error.code === "23505") throw new Error(`"${name}" already exists`);
     throw new Error(error.message);

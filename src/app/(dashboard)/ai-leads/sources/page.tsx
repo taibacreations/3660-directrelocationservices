@@ -187,7 +187,7 @@ export default async function SettingsPage() {
               Add source
             </button>
           </form>
-          <p className="mt-2 text-xs text-[#737373]">New sources start switched off. Sources also appear here on their own when the first lead arrives.</p>
+          <p className="mt-2 text-xs text-[#737373]">New sources start switched on. Sources also appear here on their own when the first lead arrives. Switch off any source the AI should not contact (for example Equate Warm).</p>
         </Row>
 
         <Row
