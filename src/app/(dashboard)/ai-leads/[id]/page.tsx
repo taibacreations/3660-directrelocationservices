@@ -1,5 +1,4 @@
-// File: app/(dashboard)/ai-leads/[id]/page.tsx  (REPLACE existing file)
-// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/[id]/page.tsx)
+// File: src/app/(dashboard)/ai-leads/[id]/page.tsx  (REPLACE existing file)
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -76,7 +75,10 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     ["Email", lead.email],
     ["Moving from", place(lead.from_city, lead.from_state)],
     ["Moving to", place(lead.to_city, lead.to_state)],
-    ["Move date", lead.move_date],
+    ["Move date", lead.move_date ?? lead.move_date_note],
+    ["Home size", lead.home_size],
+    ["Zip codes", lead.from_zip || lead.to_zip ? `${lead.from_zip ?? "?"} to ${lead.to_zip ?? "?"}` : null],
+    ["Contact preference", lead.contact_preference ? `Prefers ${lead.contact_preference}` : null],
     ["Lead source", lead.source],
     ["Came in through", channel],
     ["Granot job", lead.granot_job_number],
@@ -100,7 +102,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
       title={
         <span className="flex flex-wrap items-center gap-3">
           {name}
-          <StatusBadge status={lead.status} />
+          <StatusBadge status={lead.status} pref={lead.contact_preference} />
         </span>
       }
       description={moveLine(lead.from_city, lead.from_state, lead.to_city, lead.to_state) || "No move details yet"}

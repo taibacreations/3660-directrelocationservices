@@ -164,10 +164,13 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   unresponsive: { label: "No response", cls: "bg-[#F1F1F1] text-[#525252]" },
   excluded: { label: "Source off", cls: "bg-[#F1F1F1] text-[#737373]" },
   invalid: { label: "Invalid phone", cls: "bg-[#F1F1F1] text-[#737373]" },
+  prefers_contact: { label: "Prefers text", cls: "bg-[#EDE9FE] text-[#6D28D9]" },
 };
 
-export function StatusBadge({ status }: { status: string }) {
-  const s = STATUS[status] ?? { label: status.replace(/_/g, " "), cls: "bg-[#F1F1F1] text-[#525252]" };
+/** pref = lead.contact_preference ("text" | "email"), used for the "Prefers text / email" label */
+export function StatusBadge({ status, pref }: { status: string; pref?: string | null }) {
+  const base = STATUS[status] ?? { label: status.replace(/_/g, " "), cls: "bg-[#F1F1F1] text-[#525252]" };
+  const s = status === "prefers_contact" && pref === "email" ? { ...base, label: "Prefers email" } : base;
   return (
     <span
       className={`${font.className} inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold not-italic normal-case tracking-normal ${s.cls}`}

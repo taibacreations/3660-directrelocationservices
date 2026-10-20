@@ -1,5 +1,4 @@
-// File: app/(dashboard)/ai-leads/page.tsx  (REPLACE existing file)
-// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/page.tsx)
+// File: src/app/(dashboard)/ai-leads/page.tsx  (REPLACE existing file)
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -27,6 +26,7 @@ const FILTERS = [
   { key: "missed_transfer", label: "Missed transfer" },
   { key: "opted_out", label: "Opted out" },
   { key: "unresponsive", label: "No response" },
+  { key: "prefers_contact", label: "Text / email" },
   { key: "excluded", label: "Source off" },
 ];
 const LIVE = ["new", "held", "active", "opted_in", "missed_transfer"];
@@ -71,6 +71,7 @@ interface LeadRow {
   to_state: string | null;
   source: string | null;
   status: string;
+  contact_preference: string | null;
   attempt_count: number;
   next_action: string | null;
   next_action_at: string | null;
@@ -223,8 +224,8 @@ export default async function AiLeadsPage({
       <div className="grid gap-6 xl:grid-cols-4">
         {/* Leads */}
         <Card className="min-w-0 xl:col-span-3">
-          <div className="flex flex-col gap-4 border-b border-[#F0F0F0] p-4 md:flex-row md:items-center md:justify-between md:px-5">
-            <nav className="flex gap-1 overflow-x-auto" aria-label="Filter leads">
+          <div className="flex flex-col gap-3 border-b border-[#F0F0F0] p-4 md:px-5">
+            <nav className="-mx-1 flex flex-nowrap gap-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter leads">
               {FILTERS.map((f) => {
                 const on = status === f.key;
                 return (
@@ -232,7 +233,7 @@ export default async function AiLeadsPage({
                     key={f.key}
                     href={`/ai-leads?status=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                     aria-current={on ? "page" : undefined}
-                    className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
+                    className={`shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
                       on ? "bg-[#1E1E1E] text-white shadow-sm" : "text-[#737373] hover:bg-[#F0F0F0] hover:text-[#171717]"
                     }`}
                   >
@@ -241,7 +242,7 @@ export default async function AiLeadsPage({
                 );
               })}
             </nav>
-            <form action="/ai-leads" className="relative w-full md:w-72">
+            <form action="/ai-leads" className="relative w-full">
               <input type="hidden" name="status" value={status} />
               <label htmlFor="lead-search" className="sr-only">
                 Search leads
@@ -285,7 +286,7 @@ export default async function AiLeadsPage({
                               <p className="truncate text-sm font-bold">{name}</p>
                               <p className="text-sm text-[#737373]">{fmtPhone(l.phone_e164)}</p>
                             </div>
-                            <StatusBadge status={l.status} />
+                            <StatusBadge status={l.status} pref={l.contact_preference} />
                           </div>
                           <p className="mt-2 text-sm text-[#3D3D3D]">{moveLine(l.from_city, l.from_state, l.to_city, l.to_state) || "No move details"}</p>
                           <p className="mt-1 text-xs text-[#737373]">
@@ -335,7 +336,7 @@ export default async function AiLeadsPage({
                           </td>
                           <td className="px-4 py-3.5 text-[#3D3D3D]">{l.source ?? "—"}</td>
                           <td className="px-4 py-3.5">
-                            <StatusBadge status={l.status} />
+                            <StatusBadge status={l.status} pref={l.contact_preference} />
                             <p className="mt-1 text-xs text-[#737373]">
                               {l.status === "transferred" && l.seconds_to_connect !== null
                                 ? `Connected in ${fmtDuration(l.seconds_to_connect)}`
