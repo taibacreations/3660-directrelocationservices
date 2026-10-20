@@ -1,4 +1,5 @@
-// File: app/(dashboard)/ai-leads/loading.tsx
+// File: src/app/(dashboard)/ai-leads/loading.tsx  (REPLACE existing file)
+// Loading state for the AI Leads pages (also the Suspense boundary cacheComponents needs).
 
 import { Shell } from "./_components/ui";
 
@@ -33,7 +34,7 @@ export default function Loading() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-6 xl:grid-cols-4">
+        <div className="mt-6 grid gap-6 xl:grid-cols-4">
           <div className="rounded-2xl border border-[#E5E5E5] bg-white xl:col-span-3">
             <div className="flex gap-2 border-b border-[#F0F0F0] p-4">
               {[0, 1, 2, 3].map((i) => (

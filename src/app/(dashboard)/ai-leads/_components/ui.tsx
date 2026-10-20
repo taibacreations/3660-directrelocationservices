@@ -1,9 +1,10 @@
-// File: app/(dashboard)/ai-leads/_components/ui.tsx
+// File: src/app/(dashboard)/ai-leads/_components/ui.tsx  (REPLACE existing file)
 
 import Link from "next/link";
 import { Barlow, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/login/actions";
+import { PendingButton } from "./pending-button";
 
 export const font = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap" });
 // Italic, heavy headings to match the italic DRS wordmark
@@ -26,68 +27,93 @@ export function Shell({
   children: ReactNode;
 }) {
   const tab = (on: boolean) =>
-    `relative flex h-full items-center px-1 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600] ${
-      on ? "text-[#E10600]" : "text-[#3D3D3D] hover:text-[#E10600]"
+    `flex items-center gap-2 rounded-full px-3.5 py-2 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600] md:px-4 ${
+      on ? "bg-[#E10600] text-white shadow-[0_6px_14px_-6px_rgba(225,6,0,0.6)]" : "text-[#525252] hover:bg-[#F2F2F2] hover:text-[#171717]"
     }`;
 
   return (
     <div className={`${font.className} min-h-dvh bg-[#F5F5F5] text-[#171717] antialiased`}>
-      {/* White bar so the logo sits on its own white background */}
-      <div className="border-b border-[#E5E5E5] bg-white">
-        <header className={`${CONTAINER} flex h-16 items-center gap-5 md:h-[72px] md:gap-10`}>
-          <Link href="/ai-leads" className="flex shrink-0 items-center" aria-label="Direct Relocation Services, Leads">
-            <Logo className="h-8 w-auto max-w-[120px] object-contain md:h-11 md:max-w-[220px]" />
-          </Link>
-
-          <nav className="flex h-full gap-5 md:gap-7">
-            <Link href="/ai-leads" className={tab(active === "leads")} aria-current={active === "leads" ? "page" : undefined}>
-              Leads
-              {active === "leads" && <span className="rounded-t bg-[#E10600]" />}
-            </Link>
+      {/* Thin red brand line + clean white header */}
+      <div className="sticky top-0 z-40">
+        <div className="h-1 bg-[#E10600]" aria-hidden />
+        <div className="border-b border-[#EBEBEB] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+          <header className={`${CONTAINER} flex h-16 items-center gap-3 md:h-[70px] md:gap-5`}>
             <Link
-              href="/ai-leads/sources"
-              className={tab(active === "sources")}
-              aria-current={active === "sources" ? "page" : undefined}
+              href="/ai-leads"
+              className="flex shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E10600]"
+              aria-label="Direct Relocation Services, AI Leads"
             >
-              Settings
-              {active === "sources" && <span className=" rounded-t bg-[#E10600]" />}
+              <Logo className="h-8 w-auto max-w-[110px] object-contain md:h-14 md:max-w-[180px]" />
             </Link>
-          </nav>
 
-          <div className="ml-auto flex items-center gap-3">
-            {aiEnabled !== undefined && (
-              <span className="hidden items-center gap-2 rounded-full border border-[#E5E5E5] bg-[#FAFAFA] px-3 py-1.5 text-xs font-bold text-[#3D3D3D] md:flex">
-                <span className="relative flex h-2 w-2">
-                  {aiEnabled && (
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#16A34A] opacity-60 motion-reduce:hidden" />
-                  )}
-                  <span className={`relative inline-flex h-2 w-2 rounded-full ${aiEnabled ? "bg-[#16A34A]" : "bg-[#F59E0B]"}`} />
-                </span>
-                {aiEnabled ? "AI outreach on" : "AI outreach paused"}
-              </span>
-            )}
-            <form action={signOut}>
-              <button className="whitespace-nowrap rounded-lg border border-[#E5E5E5] px-3 py-2 text-sm font-bold text-[#3D3D3D] transition-colors hover:border-[#1E1E1E] hover:bg-[#1E1E1E] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]">
-                Sign out
-              </button>
-            </form>
-          </div>
-        </header>
+            <span className="hidden h-8 w-px bg-[#E5E5E5] md:block" aria-hidden />
+
+            <nav className="flex items-center gap-1 rounded-full bg-[#F7F7F7] p-1" aria-label="Main">
+              <Link href="/ai-leads" className={tab(active === "leads")} aria-current={active === "leads" ? "page" : undefined}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                Leads
+              </Link>
+              <Link href="/ai-leads/sources" className={tab(active === "sources")} aria-current={active === "sources" ? "page" : undefined}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" />
+                </svg>
+                Settings
+              </Link>
+            </nav>
+
+            <div className="ml-auto flex items-center gap-2 md:gap-3">
+              {aiEnabled !== undefined && (
+                <Link
+                  href="/ai-leads/sources"
+                  title={aiEnabled ? "The AI is contacting leads. Pause it in Settings." : "The AI is paused. Turn it on in Settings."}
+                  className={`hidden items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold transition-colors sm:flex ${
+                    aiEnabled
+                      ? "border-[#BBE5C8] bg-[#E7F6EC] text-[#15803D] hover:border-[#16A34A]"
+                      : "border-[#F8D99B] bg-[#FFF4DB] text-[#B45309] hover:border-[#F59E0B]"
+                  }`}
+                >
+                  <span className="relative flex h-2 w-2">
+                    {aiEnabled && (
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#16A34A] opacity-60 motion-reduce:hidden" />
+                    )}
+                    <span className={`relative inline-flex h-2 w-2 rounded-full ${aiEnabled ? "bg-[#16A34A]" : "bg-[#F59E0B]"}`} />
+                  </span>
+                  {aiEnabled ? "AI outreach on" : "AI outreach paused"}
+                </Link>
+              )}
+              <form action={signOut}>
+                <PendingButton
+                  pendingText="Signing out…"
+                  aria-label="Sign out"
+                  className="whitespace-nowrap rounded-full px-3 py-2 text-sm font-bold text-[#525252] transition-colors hover:bg-[#F2F2F2] hover:text-[#171717] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                  </svg>
+                  <span className="hidden md:inline">Sign out</span>
+                </PendingButton>
+              </form>
+            </div>
+          </header>
+        </div>
       </div>
 
-      {/* Charcoal band with a red brand stripe */}
+      {/* Charcoal band behind the page title; the first cards overlap its bottom edge */}
       <div className="relative overflow-hidden bg-[#1E1E1E] text-white">
-        <span className="absolute inset-x-0 top-0 h-1 bg-[#E10600]" aria-hidden />
         <span className="pointer-events-none absolute -right-10 top-8 hidden gap-3 opacity-90 md:flex" aria-hidden>
           <span className="h-24 w-6 -skew-x-[20deg] bg-[#E10600]" />
           <span className="h-24 w-6 -skew-x-[20deg] bg-[#E10600]/60" />
           <span className="h-24 w-6 -skew-x-[20deg] bg-[#E10600]/30" />
           <span className="h-24 w-24 -skew-x-[20deg] bg-white/[0.04]" />
         </span>
-        <div className={`${CONTAINER} relative pb-28 pt-8 md:pt-10`}>{hero}</div>
+        <div className={`${CONTAINER} relative pb-24 pt-9 md:pt-11`}>{hero}</div>
       </div>
 
-      <main className={`${CONTAINER} relative -mt-20 pb-12`}>{children}</main>
+      <main className={`${CONTAINER} relative -mt-14 pb-12`}>{children}</main>
     </div>
   );
 }
@@ -114,7 +140,10 @@ export function HeroTitle({
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {above}
-        <h1 className={`${display.className} text-4xl font-extrabold uppercase italic tracking-tight md:text-5xl`}>{title}</h1>
+        <h1 className={`${display.className} flex items-center gap-3 text-3xl font-extrabold uppercase italic tracking-tight text-white md:text-4xl`}>
+          <span className="h-7 w-2 shrink-0 -skew-x-[20deg] bg-[#E10600] md:h-8" aria-hidden />
+          {title}
+        </h1>
         {description && <div className="mt-2 max-w-2xl text-[15px] text-white/70">{description}</div>}
       </div>
       {actions}

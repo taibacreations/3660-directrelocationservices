@@ -9,14 +9,22 @@ import { db, rpc } from "@/lib/ai-leads/supabase";
 
 // These run with the service-role key, so each one checks that someone is signed in first.
 
-/** "(954) 569-5292" / "9545695292" / "+1 954…" → "+19545695292". Empty → null. */
-function toE164(value: FormDataEntryValue | null, label: string): string | null {
+/** Result of a settings form. The page shows `error` next to the form instead of crashing. */
+export type FormState = {
+  error: string | null;
+  ok: boolean;
+  at: number;
+  values?: Record<string, string>;
+};
+
+/** "(954) 569-5292" / "9545695292" / "+1 954…" → "+19545695292". Empty → null. Bad → "invalid". */
+function toE164(value: FormDataEntryValue | null): string | null | "invalid" {
   const raw = String(value ?? "").trim();
   if (!raw) return null;
   const d = raw.replace(/\D/g, "");
   if (d.length === 10) return `+1${d}`;
   if (d.length === 11 && d.startsWith("1")) return `+${d}`;
-  throw new Error(`${label} must be a 10-digit US number`);
+  return "invalid";
 }
 
 export async function toggleSource(formData: FormData) {
@@ -28,36 +36,48 @@ export async function toggleSource(formData: FormData) {
   revalidatePath("/ai-leads/sources");
 }
 
-export async function saveSourceRouting(formData: FormData) {
+export async function saveSourceRouting(_prev: FormState, formData: FormData): Promise<FormState> {
   await requireUser();
+  const values = {
+    twilio_number: String(formData.get("twilio_number") ?? ""),
+    ringcentral_did: String(formData.get("ringcentral_did") ?? ""),
+    vapi_phone_number_id: String(formData.get("vapi_phone_number_id") ?? ""),
+  };
+  const fail = (error: string): FormState => ({ error, ok: false, at: Date.now(), values });
+
   const name = String(formData.get("name"));
-  const twilio_number = toE164(formData.get("twilio_number"), "Twilio number");
-  const ringcentral_did = toE164(formData.get("ringcentral_did"), "RingCentral DID");
-  const vapi_phone_number_id = String(formData.get("vapi_phone_number_id") ?? "").trim() || null;
+  const twilio_number = toE164(values.twilio_number);
+  const ringcentral_did = toE164(values.ringcentral_did);
+  const vapi_phone_number_id = values.vapi_phone_number_id.trim() || null;
+  if (twilio_number === "invalid") return fail("Twilio number must be a 10-digit US number.");
+  if (ringcentral_did === "invalid") return fail("RingCentral DID must be a 10-digit US number.");
 
   const { error } = await db()
     .from("ai_lead_sources")
     .update({ twilio_number, ringcentral_did, vapi_phone_number_id })
     .eq("name", name);
   if (error) {
-    if (error.code === "23505") throw new Error(`${twilio_number} is already used by another source`);
-    throw new Error(error.message);
+    if (error.code === "23505") return fail(`${values.twilio_number} is already used by another source.`);
+    return fail(`Couldn't save: ${error.message}`);
   }
   revalidatePath("/ai-leads/sources");
   revalidatePath("/ai-leads");
+  return { error: null, ok: true, at: Date.now() };
 }
 
-export async function addSource(formData: FormData) {
+export async function addSource(_prev: FormState, formData: FormData): Promise<FormState> {
   await requireUser();
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) throw new Error("Source name is required");
+  const fail = (error: string): FormState => ({ error, ok: false, at: Date.now(), values: { name } });
+  if (!name) return fail("Please type the source name.");
   // Must match the lead source name exactly as Granot / the website sends it
   const { error } = await db().from("ai_lead_sources").insert({ name, enabled: true });
   if (error) {
-    if (error.code === "23505") throw new Error(`"${name}" already exists`);
-    throw new Error(error.message);
+    if (error.code === "23505") return fail(`"${name}" is already in the list.`);
+    return fail(`Couldn't add: ${error.message}`);
   }
   revalidatePath("/ai-leads/sources");
+  return { error: null, ok: true, at: Date.now() };
 }
 
 export async function setAiEnabled(formData: FormData) {

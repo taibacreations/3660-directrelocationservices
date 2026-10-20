@@ -1,4 +1,5 @@
-// File: app/(dashboard)/ai-leads/[id]/page.tsx
+// File: app/(dashboard)/ai-leads/[id]/page.tsx  (REPLACE existing file)
+// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/[id]/page.tsx)
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -18,6 +19,7 @@ import {
   moveLine,
   place,
 } from "../_components/ui";
+import { PendingButton } from "../_components/pending-button";
 
 interface Activity {
   at: string;
@@ -208,9 +210,12 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                   Cancels every scheduled text and call and blocks this number for future leads. This can&apos;t be
                   undone from the dashboard.
                 </p>
-                <button className="mt-4 rounded-xl bg-[#FDECEB] px-4 py-2.5 text-sm font-bold text-[#B30500] hover:bg-[#FAD7D4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B30500]">
+                <PendingButton
+                  pendingText="Opting out…"
+                  className="mt-4 rounded-xl bg-[#FDECEB] px-4 py-2.5 text-sm font-bold text-[#B30500] hover:bg-[#FAD7D4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B30500]"
+                >
                   Opt out {fmtPhone(lead.phone_e164)}
-                </button>
+                </PendingButton>
               </form>
             </Card>
           )}

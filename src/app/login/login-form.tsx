@@ -1,4 +1,5 @@
-// File: app/login/login-form.tsx
+// File: app/login/login-form.tsx  (REPLACE existing file)
+// (If your project uses a src/ folder, put it in src/app/login/login-form.tsx)
 
 "use client";
 
@@ -51,7 +52,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            className="text-sm font-medium text-[#E10600] hover:text-[#C00500]"
+            className="cursor-pointer text-sm font-medium text-[#E10600] hover:text-[#C00500]"
           >
             {show ? "Hide" : "Show"}
           </button>
@@ -69,7 +70,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#E10600] px-4 py-3 text-sm font-bold shadow-lg shadow-[#E10600]/30 text-white transition-colors hover:bg-[#C00500] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]"
+        className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#E10600] px-4 py-3 text-sm font-bold shadow-lg shadow-[#E10600]/30 text-white transition-colors hover:bg-[#C00500] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E10600]"
       >
         {pending && <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden />}
         {pending ? "Signing in" : "Sign in"}
