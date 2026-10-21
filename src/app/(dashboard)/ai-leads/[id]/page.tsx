@@ -172,7 +172,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                           </p>
                         )}
                         {a.recording_url && (
-                          <audio controls preload="none" src={a.recording_url} className="mt-2 h-9 w-full max-w-md" />
+                          <audio controls preload="none" src={recordingSrc(a.recording_url)} className="mt-2 h-9 w-full max-w-md" />
                         )}
                       </div>
                     </li>
@@ -225,6 +225,14 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
       </div>
     </Shell>
   );
+}
+
+/** Vapi recordings are private: play them through our own route, which gets a signed link.
+ *  The file name starts with the Vapi call id, e.g. ".../01a15d22-758b-788c-8cd6-1da3236beaf4-1792...-mono.wav" */
+function recordingSrc(url: string) {
+  const file = url.split("/").pop() ?? "";
+  const m = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(file);
+  return m ? `/ai-leads/recording/${m[1]}` : url;
 }
 
 function KindIcon({ kind }: { kind: Activity["kind"] }) {
