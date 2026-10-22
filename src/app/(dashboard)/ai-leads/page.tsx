@@ -29,7 +29,7 @@ const FILTERS = [
   { key: "prefers_contact", label: "Text / email" },
   { key: "excluded", label: "Source off" },
 ];
-const LIVE = ["new", "held", "active", "opted_in", "missed_transfer"];
+const LIVE = ["new", "held", "active", "opted_in", "missed_transfer", "callback_scheduled"];
 const NEXT_ACTION: Record<string, string> = { sms: "Text", call: "AI call", mark_unresponsive: "Close out" };
 const SOURCE_BARS = ["bg-[#E10600]", "bg-[#1E1E1E]", "bg-[#F59E0B]", "bg-[#16A34A]", "bg-[#2563EB]", "bg-[#8A8A8A]"];
 

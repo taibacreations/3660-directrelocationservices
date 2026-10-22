@@ -84,6 +84,8 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     ["Granot job", lead.granot_job_number],
     ["Received", fmtTime(lead.created_at)],
     ["Attempts", String(lead.attempt_count)],
+    ["Follow-up attempt", lead.seq_attempt ? `${lead.seq_attempt} of the sequence` : null],
+    ["Callback booked", lead.callback_at ? `${fmtTime(lead.callback_at)} ET` : null],
     ["Time to live call", fmtDuration(lead.seconds_to_connect)],
     ["Note", lead.status_reason],
   ];
@@ -193,8 +195,8 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                   <li key={t.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
                     <span className="flex items-center gap-2 font-semibold">
                       <span className={`h-2 w-2 rounded-full ${t.action === "call" ? "bg-[#E10600]" : t.action === "sms" ? "bg-[#1E1E1E]" : "bg-[#A3A3A3]"}`} />
-                      {TASK_LABEL[t.action] ?? t.action}
-                      {t.step_no ? <span className="font-normal text-[#737373]">(step {t.step_no})</span> : null}
+                      {t.reason === "callback" ? "Booked callback" : (TASK_LABEL[t.action] ?? t.action)}
+                      {t.step_no ? <span className="font-normal text-[#737373]">(attempt {t.step_no})</span> : null}
                     </span>
                     <span className="tabular-nums text-[#737373]">{fmtTime(t.run_at)}</span>
                   </li>

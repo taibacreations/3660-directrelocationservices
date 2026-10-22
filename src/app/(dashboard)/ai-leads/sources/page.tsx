@@ -1,11 +1,11 @@
-// File: app/(dashboard)/ai-leads/sources/page.tsx  (REPLACE existing file)
-// (If your project uses a src/ folder, put it in src/app/(dashboard)/ai-leads/sources/page.tsx)
+// File: src/app/(dashboard)/ai-leads/sources/page.tsx  (REPLACE existing file)
 
 import { db } from "@/lib/ai-leads/supabase";
 import { setAiEnabled, setDisclosure } from "../actions";
 import { Card, ErrorNote, HeroTitle, Shell, fmtTime } from "../_components/ui";
 import { PendingButton } from "../_components/pending-button";
 import { AddSourceForm, SourceRow } from "../_components/source-forms";
+import { FollowupForm } from "../_components/followup-form";
 
 const DISCLOSURE = [
   { key: "off", label: "Off", hint: "The AI never opens with it." },
@@ -174,6 +174,18 @@ export default async function SettingsPage() {
           </div>
         </Card>
 
+        {/* ------------------------------------------------ Follow-up sequence */}
+        <Card
+          title="Follow-up sequence"
+          description="How often the AI follows up with a new lead, in business hours only, until the customer answers, replies or opts out."
+        >
+          <FollowupForm
+            attempts={settings?.seq_attempts ?? [3, 3, 2, 2, 1, 1, 1]}
+            wait={settings?.text_to_call_minutes ?? 5}
+            dedupe={settings?.dedupe_minutes ?? 10}
+          />
+        </Card>
+
         <div className="grid gap-6 lg:grid-cols-2">
           {/* ------------------------------------------------ Disclosure */}
           <Card
@@ -237,8 +249,7 @@ export default async function SettingsPage() {
               })}
             </ul>
             <p className="border-t border-[#F0F0F0] px-5 py-4 text-xs text-[#737373]">
-              Leads that arrive after hours wait until the next opening. The same phone number within{" "}
-              {settings?.dedupe_days ?? 30} days counts as one lead.
+              Leads that arrive after hours wait until the next opening. Callbacks can only be booked inside these hours.
             </p>
           </Card>
         </div>

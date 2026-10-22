@@ -36,7 +36,7 @@ export function Shell({
       {/* Thin red brand line + clean white header */}
       <div className="sticky top-0 z-40">
         <div className="h-1 bg-[#E10600]" aria-hidden />
-        <div className="border-b border-[#EBEBEB] bg-white">
+        <div className="border-b border-[#EBEBEB] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
           <header className={`${CONTAINER} flex h-16 items-center gap-3 md:h-[70px] md:gap-5`}>
             <Link
               href="/ai-leads"
@@ -165,6 +165,8 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   excluded: { label: "Source off", cls: "bg-[#F1F1F1] text-[#737373]" },
   invalid: { label: "Invalid phone", cls: "bg-[#F1F1F1] text-[#737373]" },
   prefers_contact: { label: "Prefers text", cls: "bg-[#EDE9FE] text-[#6D28D9]" },
+  callback_scheduled: { label: "Callback booked", cls: "bg-[#E0F2FE] text-[#0369A1]" },
+  replaced: { label: "Replaced", cls: "bg-[#F1F1F1] text-[#737373]" },
 };
 
 /** pref = lead.contact_preference ("text" | "email"), used for the "Prefers text / email" label */
