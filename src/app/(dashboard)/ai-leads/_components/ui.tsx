@@ -49,7 +49,7 @@ export function Shell({
       {/* Thin red brand line + clean white header */}
       <div className="sticky top-0 z-40">
         <div className="h-1 bg-[#E10600]" aria-hidden />
-        <div className="border-b border-[#EBEBEB] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+        <div className="border-b border-[#EBEBEB] bg-white backdrop-blur">
           <header
             className={`${CONTAINER} flex h-16 items-center gap-3 md:h-[70px] md:gap-5`}
           >
