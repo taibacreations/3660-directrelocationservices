@@ -262,6 +262,9 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   },
   replaced: { label: "Replaced", cls: "bg-[#F1F1F1] text-[#737373]" },
   no_consent: { label: "No consent", cls: "bg-[#FEF3C7] text-[#92400E]" },
+  unreachable: { label: "Unreachable", cls: "bg-[#FEE2E2] text-[#991B1B]" },
+  booked: { label: "Booked", cls: "bg-[#DCFCE7] text-[#166534]" },
+  with_sales: { label: "With sales", cls: "bg-[#E0E7FF] text-[#3730A3]" },
 };
 
 /** pref = lead.contact_preference ("text" | "email"), used for the "Prefers text / email" label */

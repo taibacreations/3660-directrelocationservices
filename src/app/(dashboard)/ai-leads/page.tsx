@@ -29,6 +29,9 @@ const FILTERS = [
   { key: "prefers_contact", label: "Text / email" },
   { key: "excluded", label: "Source off" },
   { key: "no_consent", label: "No consent" },
+  { key: "unreachable", label: "Unreachable" },
+  { key: "booked", label: "Booked" },
+  { key: "with_sales", label: "With sales" },
 ];
 const LIVE = [
   "new",
